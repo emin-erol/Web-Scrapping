@@ -7,8 +7,8 @@ import time
 
 browser = webdriver.Chrome()
 
-idName = "05527784125"
-pw = "uxvjp.967"
+idName = "0555555555"
+pw = "uctrs9.21"
 url = "https://twitter.com/"
 
 browser.get(url)
