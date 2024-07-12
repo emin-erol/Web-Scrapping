@@ -1,0 +1,48 @@
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+import time
+
+# WebDriver'ı başlat ve web sitesine git
+driver = webdriver.Chrome(executable_path='path_to_chromedriver')
+driver.get('url_of_the_website')
+
+# Scroll-bar içindeki itemlerin bulunduğu elementi bul
+scroll_area = driver.find_element(By.CSS_SELECTOR, 'css_selector_of_scroll_area')
+
+# ActionChains nesnesi oluştur
+actions = ActionChains(driver)
+
+# Tüm itemlerin içeriğini almak için boş bir liste oluştur
+items_content = []
+
+# Scroll yapmadan önce mevcut item sayısını al
+item_index = 1
+
+while True:
+    try:
+        # Dinamik XPath ile sırayla her bir itemi bul
+        item_xpath = f"//css_selector_of_scroll_area/li[{item_index}]"
+        item = driver.find_element(By.XPATH, item_xpath)
+        
+        # Her bir itemin içeriğini listeye ekleyin
+        item_text = item.text
+        if item_text not in items_content:
+            items_content.append(item_text)
+        
+        # Scroll-bar'ı aşağıya kaydır (her seferinde biraz daha kaydır)
+        actions.move_to_element(scroll_area).click_and_hold().move_by_offset(0, 100).release().perform()
+        time.sleep(1)  # Scroll sonrası yeni itemlerin yüklenmesi için biraz bekle
+        
+        # Bir sonraki iteme geç
+        item_index += 1
+    
+    except:
+        # Eğer element bulunamazsa (Exception atılırsa), döngü sona erdir
+        break
+
+# Tüm itemlerin içeriği alınmış olacak
+print(items_content)
+
+# WebDriver'ı kapat
+driver.quit()
